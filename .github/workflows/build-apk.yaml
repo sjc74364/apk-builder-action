@@ -92,6 +92,16 @@ jobs:
             echo "- **taskName:** \`$TASK\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Prepare DejaVu Fonts
+        working-directory: ./workspace/${{ inputs.subdir }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-dejavu-core
+          mkdir -p deps/out/fonts
+          cp /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf deps/out/fonts/DejaVuSans.ttf 2>/dev/null || \
+            curl -sL -o deps/out/fonts/DejaVuSans.ttf \
+              "https://github.com/dejavu-fonts/dejavu-fonts/raw/version_2_37/ttf/DejaVuSans.ttf"
+
       - name: Build APK
         working-directory: ./workspace/${{ inputs.subdir }}
         env:
