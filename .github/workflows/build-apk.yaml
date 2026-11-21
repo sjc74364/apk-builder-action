@@ -106,12 +106,15 @@ jobs:
 
           ls -l "$TARGET_DIR/DejaVuSans.ttf"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Install CMake 3.30.4
         run: |
-          yes | sdkmanager --install "cmake;3.30.4"
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            # 回退到带版本号的路径
+            SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -path '*/bin/sdkmanager' -type f 2>/dev/null | head -n 1)
+          fi
+          echo "Using sdkmanager: $SDKMANAGER"
+          yes | "$SDKMANAGER" --install "cmake;3.30.4"
 
       - name: Build APK
         working-directory: ./workspace/${{ inputs.subdir }}
@@ -164,7 +167,12 @@ jobs:
 
           chmod +x gradlew
 
-          yes | sdkmanager --licenses > /dev/null || true
+          # 注意：这里的 sdkmanager --licenses 也需要用绝对路径
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -path '*/bin/sdkmanager' -type f 2>/dev/null | head -n 1)
+          fi
+          yes | "$SDKMANAGER" --licenses > /dev/null || true
 
           SIGNING_ARGS=()
           if [[ "$TASK_NAME" == *Release* ]]; then
