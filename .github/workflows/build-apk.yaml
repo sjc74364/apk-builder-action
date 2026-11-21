@@ -106,6 +106,9 @@ jobs:
 
           ls -l "$TARGET_DIR/DejaVuSans.ttf"
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Install CMake 3.30.4
         run: |
           yes | sdkmanager --install "cmake;3.30.4"
