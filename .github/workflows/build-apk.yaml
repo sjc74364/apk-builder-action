@@ -97,7 +97,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y fonts-dejavu-core
 
-          # 根据报错路径，Gradle 在 workspace/android/deps/out/fonts/ 下查找字体
           TARGET_DIR="$GITHUB_WORKSPACE/workspace/android/deps/out/fonts"
           mkdir -p "$TARGET_DIR"
 
@@ -106,6 +105,10 @@ jobs:
               "https://github.com/dejavu-fonts/dejavu-fonts/raw/version_2_37/ttf/DejaVuSans.ttf"
 
           ls -l "$TARGET_DIR/DejaVuSans.ttf"
+
+      - name: Install CMake 3.30.4
+        run: |
+          yes | sdkmanager --install "cmake;3.30.4"
 
       - name: Build APK
         working-directory: ./workspace/${{ inputs.subdir }}
@@ -140,8 +143,6 @@ jobs:
           }
           trap 'handle_failure "$?"' ERR
 
-          # Run a command, tee its output into $LOG_FILE, and on failure
-          # write a failure summary and exit with the command's status.
           run_logged() {
             set +e
             "$@"
@@ -160,7 +161,6 @@ jobs:
 
           chmod +x gradlew
 
-          # Accept all Android SDK/NDK licenses non-interactively.
           yes | sdkmanager --licenses > /dev/null || true
 
           SIGNING_ARGS=()
