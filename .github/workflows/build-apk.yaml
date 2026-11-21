@@ -7,15 +7,15 @@ on:
       repository:
         description: "Public Git repository top URL"
         required: true
-        default: "https://github.com/android/sunflower"
+        default: "https://github.com/mamcjr/TOTKDroid"
       branchName:
         description: "Git branch name [Optional]"
         required: false
-        default: ""
+        default: "main"
       subdir:
         description: "Relative subdirectory path when the project is nested [Optional]"
         required: false
-        default: ""
+        default: "android/totkrecompandroid"
       jdkVersion:
         description: "OpenJDK version: 8, 17, 21, 25, …"
         required: false
